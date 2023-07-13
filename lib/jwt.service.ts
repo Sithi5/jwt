@@ -18,47 +18,15 @@ export class JwtService {
     private readonly options: JwtModuleOptions = {}
   ) {}
 
-  sign(
-    payload: string,
-    options?: Omit<JwtSignOptions, keyof jwt.SignOptions>
-  ): string;
-  sign(payload: Buffer | object, options?: JwtSignOptions): string;
-  sign(payload: string | Buffer | object, options?: JwtSignOptions): string {
-    const signOptions = this.mergeJwtOptions(
-      { ...options },
-      'signOptions'
-    ) as jwt.SignOptions;
-    const secret = this.getSecretKey(
-      payload,
-      options,
-      'privateKey',
-      JwtSecretRequestType.SIGN
-    );
-
-    const allowedSignOptKeys = ['secret', 'privateKey'];
-    const signOptKeys = Object.keys(signOptions);
-    if (
-      typeof payload === 'string' &&
-      signOptKeys.some((k) => !allowedSignOptKeys.includes(k))
-    ) {
-      throw new Error(
-        'Payload as string is not allowed with the following sign options: ' +
-          signOptKeys.join(', ')
-      );
-    }
-
-    return jwt.sign(payload, secret, signOptions);
-  }
-
-  signAsync(
+  async sign(
     payload: string,
     options?: Omit<JwtSignOptions, keyof jwt.SignOptions>
   ): Promise<string>;
-  signAsync(
+  async sign(
     payload: Buffer | object,
     options?: JwtSignOptions
   ): Promise<string>;
-  signAsync(
+  async sign(
     payload: string | Buffer | object,
     options?: JwtSignOptions
   ): Promise<string> {
@@ -66,7 +34,7 @@ export class JwtService {
       { ...options },
       'signOptions'
     ) as jwt.SignOptions;
-    const secret = this.getSecretKey(
+    const secret = await this.getSecretKey(
       payload,
       options,
       'privateKey',
@@ -92,24 +60,13 @@ export class JwtService {
     );
   }
 
-  verify<T extends object = any>(token: string, options?: JwtVerifyOptions): T {
-    const verifyOptions = this.mergeJwtOptions({ ...options }, 'verifyOptions');
-    const secret = this.getSecretKey(
-      token,
-      options,
-      'publicKey',
-      JwtSecretRequestType.VERIFY
-    );
-
-    return jwt.verify(token, secret, verifyOptions) as T;
-  }
-
-  verifyAsync<T extends object = any>(
+  
+  async verify<T extends object = any>(
     token: string,
     options?: JwtVerifyOptions
   ): Promise<T> {
     const verifyOptions = this.mergeJwtOptions({ ...options }, 'verifyOptions');
-    const secret = this.getSecretKey(
+    const secret = await this.getSecretKey(
       token,
       options,
       'publicKey',
@@ -148,14 +105,14 @@ export class JwtService {
       : this.options[key];
   }
 
-  private getSecretKey(
+  private async getSecretKey(
     token: string | object | Buffer,
     options: JwtVerifyOptions | JwtSignOptions,
     key: 'publicKey' | 'privateKey',
     secretRequestType: JwtSecretRequestType
-  ): string | Buffer | jwt.Secret {
+  ): Promise<string | Buffer | jwt.Secret> {
     let secret = this.options.secretOrKeyProvider
-      ? this.options.secretOrKeyProvider(secretRequestType, token, options)
+      ? await this.options.secretOrKeyProvider(secretRequestType, token, options)
       : options?.secret ||
         this.options.secret ||
         (key === 'privateKey'

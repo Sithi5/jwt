@@ -58,25 +58,13 @@ describe('JWT Service', () => {
     });
 
     it('signing should use config.secretOrKeyProvider', async () => {
-      expect(await jwtService.sign(testPayload)).toBe(
-        `signed_${testPayload}_by_sign_secret`
-      );
-    });
-
-    it('signing (async) should use config.secretOrKeyProvider', async () => {
-      await expect(jwtService.signAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.sign(testPayload)).resolves.toBe(
         `signed_${testPayload}_by_sign_secret`
       );
     });
 
     it('verifying should use config.secretOrKeyProvider', async () => {
-      expect(await jwtService.verify(testPayload)).toBe(
-        `verified_${testPayload}_by_verify_secret`
-      );
-    });
-
-    it('verifying (async) should use config.secretOrKeyProvider', async () => {
-      await expect(jwtService.verifyAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.verify(testPayload)).resolves.toBe(
         `verified_${testPayload}_by_verify_secret`
       );
     });
@@ -91,25 +79,13 @@ describe('JWT Service', () => {
     });
 
     it('signing should use config.secret', async () => {
-      expect(await jwtService.sign(testPayload)).toBe(
-        `signed_${testPayload}_by_default_secret`
-      );
-    });
-
-    it('signing (async) should use config.secret', async () => {
-      await expect(jwtService.signAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.sign(testPayload)).resolves.toBe(
         `signed_${testPayload}_by_default_secret`
       );
     });
 
     it('verifying should use config.secret', async () => {
-      expect(await jwtService.verify(testPayload)).toBe(
-        `verified_${testPayload}_by_default_secret`
-      );
-    });
-
-    it('verifying (async) should use config.secret', async () => {
-      await expect(jwtService.verifyAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.verify(testPayload)).resolves.toBe(
         `verified_${testPayload}_by_default_secret`
       );
     });
@@ -128,25 +104,13 @@ describe('JWT Service', () => {
     });
 
     it('signing should use config.privateKey', async () => {
-      expect(await jwtService.sign(testPayload)).toBe(
-        `signed_${testPayload}_by_private_key`
-      );
-    });
-
-    it('signing (async) should use config.privateKey', async () => {
-      await expect(jwtService.signAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.sign(testPayload)).resolves.toBe(
         `signed_${testPayload}_by_private_key`
       );
     });
 
     it('verifying should use config.publicKey', async () => {
-      expect(await jwtService.verify(testPayload)).toBe(
-        `verified_${testPayload}_by_public_key`
-      );
-    });
-
-    it('verifying (async) should use config.publicKey', async () => {
-      await expect(jwtService.verifyAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.verify(testPayload)).resolves.toBe(
         `verified_${testPayload}_by_public_key`
       );
     });
@@ -166,28 +130,14 @@ describe('JWT Service', () => {
     });
 
     it('signing should use deprecated secretOrPrivateKey', async () => {
-      expect(await jwtService.sign(testPayload)).toBe(
-        `signed_${testPayload}_by_deprecated_key`
-      );
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('signing (async) should use deprecated secretOrPrivateKey', async () => {
-      await expect(jwtService.signAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.sign(testPayload)).resolves.toBe(
         `signed_${testPayload}_by_deprecated_key`
       );
       expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
     });
 
     it('verifying should use deprecated secretOrPrivateKey', async () => {
-      expect(await jwtService.verify(testPayload)).toBe(
-        `verified_${testPayload}_by_deprecated_key`
-      );
-      expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
-    });
-
-    it('verifying (async) should use deprecated secretOrPrivateKey', async () => {
-      await expect(jwtService.verifyAsync(testPayload)).resolves.toBe(
+      await expect(jwtService.verify(testPayload)).resolves.toBe(
         `verified_${testPayload}_by_deprecated_key`
       );
       expect(consoleWarnSpy).toHaveBeenCalledTimes(1);
@@ -213,13 +163,7 @@ describe('JWT Service', () => {
     it('verifying should use base64 buffer key', async () => {
       let token = jwt.sign(testPayload, secretB64);
 
-      expect(jwtService.verify(token)).toHaveProperty('foo', 'bar');
-    });
-
-    it('verifying (async) should use base64 buffer key', async () => {
-      let token = jwt.sign(testPayload, secretB64);
-
-      await expect(jwtService.verifyAsync(token)).resolves.toHaveProperty(
+      await expect(jwtService.verify(token)).resolves.toHaveProperty(
         'foo',
         'bar'
       );
@@ -240,26 +184,14 @@ describe('JWT Service', () => {
     let secret = 'custom_secret';
 
     it('signing should use secret key from options', async () => {
-      expect(await jwtService.sign(testPayload, { secret })).toBe(
-        `signed_${testPayload}_by_custom_secret`
-      );
-    });
-
-    it('signing (async) should use secret key from options', async () => {
-      await expect(jwtService.signAsync(testPayload, { secret })).resolves.toBe(
+      await expect(jwtService.sign(testPayload, { secret })).resolves.toBe(
         `signed_${testPayload}_by_custom_secret`
       );
     });
 
     it('verifying should use secret key from options', async () => {
-      expect(await jwtService.verify(testPayload, { secret })).toBe(
-        `verified_${testPayload}_by_custom_secret`
-      );
-    });
-
-    it('verifying (async) should use secret key from options', async () => {
       await expect(
-        jwtService.verifyAsync(testPayload, { secret })
+        jwtService.verify(testPayload, { secret })
       ).resolves.toBe(`verified_${testPayload}_by_custom_secret`);
     });
   });
@@ -280,26 +212,14 @@ describe('JWT Service', () => {
     let publicKey = 'customPublicKey';
 
     it('signing should use private key from options', async () => {
-      expect(await jwtService.sign(testPayload, { privateKey })).toBe(
-        `signed_${testPayload}_by_customPrivateKey`
-      );
-    });
-
-    it('signing (async) should use private key from options', async () => {
       await expect(
-        jwtService.signAsync(testPayload, { privateKey })
+        jwtService.sign(testPayload, { privateKey })
       ).resolves.toBe(`signed_${testPayload}_by_customPrivateKey`);
     });
 
     it('verifying should use public key from options', async () => {
-      expect(await jwtService.verify(testPayload, { publicKey })).toBe(
-        `verified_${testPayload}_by_customPublicKey`
-      );
-    });
-
-    it('verifying (async) should use public key from options', async () => {
       await expect(
-        jwtService.verifyAsync(testPayload, { publicKey })
+        jwtService.verify(testPayload, { publicKey })
       ).resolves.toBe(`verified_${testPayload}_by_customPublicKey`);
     });
   });
@@ -312,15 +232,10 @@ describe('JWT Service', () => {
       jwtService = await setup({ secretOrKeyProvider: undefined });
     });
 
-    it('should not "sign" expect errors with a "payload" string and "secret"', () => {
-      // @ts-expect-no-error
-      expect(() => jwtService.sign(testPayloadStr, { secret: 'secret' }));
-    });
-
-    it('should not "signAsync" expect errors with a "payload" string and "privateKey"', () => {
+    it('should not "sign" expect errors with a "payload" string and "privateKey"', () => {
       // @ts-expect-no-error
       expect(() =>
-        jwtService.signAsync(testPayloadStr, { privateKey: 'privateKey' })
+        jwtService.sign(testPayloadStr, { privateKey: 'privateKey' })
       );
     });
   });
@@ -342,18 +257,14 @@ describe('JWT Service', () => {
       expect(() =>
         // @ts-expect-error
         jwtService.sign(testPayloadStr, { expiresIn: 60 })
-      ).toThrowError(
-        'Payload as string is not allowed with the following sign options: expiresIn'
-      );
+      ).rejects.toEqual(Error('Payload as string is not allowed with the following sign options: expiresIn'));
     });
 
-    it('should "signAsync" expect errors with a "payload" string with "notBefore"', () => {
+    it('should "sign" expect errors with a "payload" string with "notBefore"', () => {
       expect(() =>
         // @ts-expect-error
-        jwtService.signAsync(testPayloadStr, { notBefore: 60 })
-      ).toThrowError(
-        'Payload as string is not allowed with the following sign options: expiresIn, notBefore'
-      );
+        jwtService.sign(testPayloadStr, { notBefore: 60 })
+      ).rejects.toEqual(Error('Payload as string is not allowed with the following sign options: expiresIn, notBefore'));
     });
 
     it('should not "sign" expect errors with a "payload" object with "notBefore" ', () => {
@@ -361,21 +272,10 @@ describe('JWT Service', () => {
       expect(() => jwtService.sign(testPayloadObj, { notBefore: 60 }));
     });
 
-    it('should not "signAsync" expect errors with a "payload" object with "notBefore" ', () => {
-      // @ts-expect-no-error
-      expect(() => jwtService.signAsync(testPayloadObj, { notBefore: 60 }));
-    });
-
     it('should "sign" expect errors using "payload" string with already defined invalid sign options', () => {
-      expect(() => jwtService.sign(testPayloadStr)).toThrowError(
+      expect(() => jwtService.sign(testPayloadStr)).rejects.toEqual(Error(
         'Payload as string is not allowed with the following sign options: expiresIn'
-      );
-    });
-
-    it('should "signAsync" expect errors using "payload" string with already defined invalid sign options', () => {
-      expect(() => jwtService.signAsync(testPayloadStr)).toThrowError(
-        'Payload as string is not allowed with the following sign options: expiresIn'
-      );
+      ));
     });
   });
 });
